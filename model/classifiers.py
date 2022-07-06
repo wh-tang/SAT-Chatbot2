@@ -50,6 +50,7 @@ class T5FineTuner(pl.LightningModule):
     )
 
 args_dict = dict(
+    # Huggingface model
     model_name_or_path='t5-small',
     tokenizer_name_or_path='t5-small',
 )

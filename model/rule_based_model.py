@@ -26,13 +26,13 @@ class ModelDecisionMaker:
         # Titles from workshops (Title 7 adapted to give more information)
         self.PROTOCOL_TITLES = [
             "0: None",
-            "1: Connecting with the Child [Week 1]",
-            "2: Laughing at our Two Childhood Pictures [Week 1]",
-            "3: Falling in Love with the Child [Week 2]",
-            "4: Vow to Adopt the Child as Your Own Child [Week 2]",
-            "5: Maintaining a Loving Relationship with the Child [Week 3]",
-            "6: An exercise to Process the Painful Childhood Events [Week 3]",
-            "7: Protocols for Creating Zest for Life [Week 4]",
+            "1: Connecting with the Child [Week 1] 你好",
+            "2: Laughing at our Two Childhood Pictures [Week 1] 你好",
+            "3: Falling in Love with the Child [Week 2] 你好",
+            "4: Vow to Adopt the Child as Your Own Child [Week 2] 你好",
+            "5: Maintaining a Loving Relationship with the Child [Week 3] 你好",
+            "6: An exercise to Process the Painful Childhood Events [Week 3] 你好",
+            "7: Protocols for Creating Zest for Life [Week 4] 你好",
             "8: Loosening Facial and Body Muscles [Week 4]",
             "9: Protocols for Attachment and Love of Nature  [Week 4]",
             "10: Laughing at, and with One's Self [Week 5]",
@@ -65,9 +65,9 @@ class ModelDecisionMaker:
         self.positive_protocols = [i for i in range(1, 21)]
 
         self.INTERNAL_PERSECUTOR_PROTOCOLS = [
+            self.PROTOCOL_TITLES[8],
             self.PROTOCOL_TITLES[15],
             self.PROTOCOL_TITLES[16],
-            self.PROTOCOL_TITLES[8],
             self.PROTOCOL_TITLES[19],
         ]
 
@@ -106,7 +106,7 @@ class ModelDecisionMaker:
         self.QUESTIONS = {
 
             "ask_name": {
-               "model_prompt": "Please enter your first name:",
+               "model_prompt": "請問你想我點叫你？",
                "choices": {
                    "open_text": lambda user_id, db_session, curr_session, app: self.save_name(user_id)
                },
@@ -115,20 +115,20 @@ class ModelDecisionMaker:
 
 
            "choose_persona": {
-              "model_prompt": "Who would you like to talk to?",
+              "model_prompt": "請問你想同邊個傾計?",
               "choices": {
-                  "Kai": lambda user_id, db_session, curr_session, app: self.get_kai(user_id),
-                  "Robert": lambda user_id, db_session, curr_session, app: self.get_robert(user_id),
-                  "Gabrielle": lambda user_id, db_session, curr_session, app: self.get_gabrielle(user_id),
-                  "Arman": lambda user_id, db_session, curr_session, app: self.get_arman(user_id),
-                  "Olivia": lambda user_id, db_session, curr_session, app: self.get_olivia(user_id),
+                  "棋": lambda user_id, db_session, curr_session, app: self.get_kai(user_id),
+                  "羅拔": lambda user_id, db_session, curr_session, app: self.get_robert(user_id),
+                  "夾比牙喇": lambda user_id, db_session, curr_session, app: self.get_gabrielle(user_id),
+                  "阿曼": lambda user_id, db_session, curr_session, app: self.get_arman(user_id),
+                  "奧利菲亞": lambda user_id, db_session, curr_session, app: self.get_olivia(user_id),
               },
               "protocols": {
-                  "Kai": [],
-                  "Robert": [],
-                  "Gabrielle": [],
-                  "Arman": [],
-                  "Olivia": [],
+                  "棋": [],
+                  "羅拔": [],
+                  "夾比牙喇": [],
+                  "阿曼": [],
+                  "奧利菲亞": [],
               },
           },
 
@@ -148,10 +148,10 @@ class ModelDecisionMaker:
                 ),
                 "choices": {
                     "yes": {
-                        "Sad": "after_classification_negative",
-                        "Angry": "after_classification_negative",
-                        "Anxious/Scared": "after_classification_negative",
-                        "Happy/Content": "after_classification_happy",
+                        "Sad": "after_classification_sad",
+                        "Angry": "after_classification_angry",
+                        "Anxious/Scared": "after_classification_fear",
+                        "開心": "after_classification_happy",
                     },
                     "no": "check_emotion",
                 },
@@ -169,13 +169,13 @@ class ModelDecisionMaker:
                     "Sad": lambda user_id, db_session, curr_session, app: self.get_sad_emotion(user_id),
                     "Angry": lambda user_id, db_session, curr_session, app: self.get_angry_emotion(user_id),
                     "Anxious/Scared": lambda user_id, db_session, curr_session, app: self.get_anxious_emotion(user_id),
-                    "Happy/Content": lambda user_id, db_session, curr_session, app: self.get_happy_emotion(user_id),
+                    "開心": lambda user_id, db_session, curr_session, app: self.get_happy_emotion(user_id),
                 },
                 "protocols": {
                     "Sad": [],
                     "Angry": [],
                     "Anxious/Scared" : [],
-                    "Happy/Content": []
+                    "開心": []
                 },
             },
 
@@ -185,19 +185,17 @@ class ModelDecisionMaker:
                 "model_prompt": lambda user_id, db_session, curr_session, app: self.get_model_prompt_happy(user_id, app, db_session),
 
                 "choices": {
-                    "Okay (happy)": "suggestions",
-                    "No, thank you (happy)": "ending_prompt"
+                    "Okay": "suggestions",
+                    "No, thank you": "ending_prompt"
                 },
                 "protocols": {
-                    "Okay (happy)": [self.PROTOCOL_TITLES[9], self.PROTOCOL_TITLES[10], self.PROTOCOL_TITLES[11]], #change here?
+                    "Okay": [self.PROTOCOL_TITLES[9], self.PROTOCOL_TITLES[10], self.PROTOCOL_TITLES[11]], #change here?
                     #[self.PROTOCOL_TITLES[k] for k in self.positive_protocols],
                     "No, thank you": []
                 },
             },
 
             ############# SAD EMOTIONS ################
-
-
             "after_classification_sad": {
                 "model_prompt": lambda user_id, db_session, curr_session, app: self.get_model_prompt_specific_event(user_id, app, db_session),
 
@@ -355,10 +353,8 @@ class ModelDecisionMaker:
                 },
             },
 
-            ############# NEGATIVE EMOTIONS (SADNESS, ANGER, FEAR/ANXIETY)
-
-
-            "after_classification_negative": {
+            ############# ANGRY EMOTION ###########
+            "after_classification_angry": {
                 "model_prompt": lambda user_id, db_session, curr_session, app: self.get_model_prompt_specific_event(user_id, app, db_session),
 
                 "choices": {
@@ -515,19 +511,162 @@ class ModelDecisionMaker:
                 },
             },
 
-            ################# POSITIVE EMOTION (HAPPINESS/CONTENT) #################
+            ############# FEAR EMOTIONS ###########
 
-            "after_classification_positive": {
-                "model_prompt": lambda user_id, db_session, curr_session, app: self.get_model_prompt_happy(user_id, app, db_session),
+            "after_classification_fear": {
+                "model_prompt": lambda user_id, db_session, curr_session, app: self.get_model_prompt_specific_event(user_id, app, db_session),
 
                 "choices": {
-                    "Okay": "suggestions",
-                    "No, thank you": "ending_prompt"
+                    "Yes, something happened": "event_is_recent",
+                    "No, it's just a general feeling": "more_questions",
                 },
                 "protocols": {
-                    "Okay": [self.PROTOCOL_TITLES[9], self.PROTOCOL_TITLES[10], self.PROTOCOL_TITLES[11]], #change here?
-                    #[self.PROTOCOL_TITLES[k] for k in self.positive_protocols],
-                    "No, thank you": []
+                    "Yes, something happened": [],
+                    "No, it's just a general feeling": []
+                },
+            },
+
+            "event_is_recent": {
+                "model_prompt": lambda user_id, db_session, curr_session, app: self.get_model_prompt_event_is_recent(user_id, app, db_session),
+
+                "choices": {
+                    "It was recent": "revisiting_recent_events",
+                    "It was distant": "revisiting_distant_events",
+                },
+                "protocols": {
+                    "It was recent": [],
+                    "It was distant": []
+                    },
+            },
+
+            "revisiting_recent_events": {
+                "model_prompt": lambda user_id, db_session, curr_session, app: self.get_model_prompt_revisit_recent(user_id, app, db_session),
+
+                "choices": {
+                    "yes": "more_questions",
+                    "no": "more_questions",
+                },
+                "protocols": {
+                    "yes": [self.PROTOCOL_TITLES[7], self.PROTOCOL_TITLES[8]],
+                    "no": [self.PROTOCOL_TITLES[11]],
+                },
+            },
+
+            "revisiting_distant_events": {
+                "model_prompt": lambda user_id, db_session, curr_session, app: self.get_model_prompt_revisit_distant(user_id, app, db_session),
+
+                "choices": {
+                    "yes": "more_questions",
+                    "no": "more_questions",
+                },
+                "protocols": {
+                    "yes": [self.PROTOCOL_TITLES[13], self.PROTOCOL_TITLES[17]],
+                    "no": [self.PROTOCOL_TITLES[6]]
+                },
+            },
+
+            "more_questions": {
+                "model_prompt": lambda user_id, db_session, curr_session, app: self.get_model_prompt_more_questions(user_id, app, db_session),
+
+                "choices": {
+                    "Okay": lambda user_id, db_session, curr_session, app: self.get_next_question(user_id),
+                    "I'd rather not": "project_emotion",
+                },
+                "protocols": {
+                    "Okay": [],
+                    "I'd rather not": [self.PROTOCOL_TITLES[13]],
+                },
+            },
+
+            "displaying_antisocial_behaviour": {
+                "model_prompt": lambda user_id, db_session, curr_session, app: self.get_model_prompt_antisocial(user_id, app, db_session),
+
+                "choices": {
+                    "yes": "project_emotion",
+                    "no": lambda user_id, db_session, curr_session, app: self.get_next_question(user_id),
+                },
+                "protocols": {
+                    "yes": [self.PROTOCOL_TITLES[13], self.PROTOCOL_TITLES[14]],
+                    "no": [self.PROTOCOL_TITLES[13]],
+                },
+            },
+
+            "internal_persecutor_saviour": {
+                "model_prompt": lambda user_id, db_session, curr_session, app: self.get_model_prompt_saviour(user_id, app, db_session),
+
+                "choices": {
+                    "yes": "project_emotion",
+                    "no": "internal_persecutor_victim",
+                },
+                "protocols": {
+                    "yes": self.INTERNAL_PERSECUTOR_PROTOCOLS,
+                    "no": []
+                },
+            },
+
+            "internal_persecutor_victim": {
+                "model_prompt": lambda user_id, db_session, curr_session, app: self.get_model_prompt_victim(user_id, app, db_session),
+
+                "choices": {
+                    "yes": "project_emotion",
+                    "no": "internal_persecutor_controlling",
+                },
+                "protocols": {
+                    "yes": self.INTERNAL_PERSECUTOR_PROTOCOLS,
+                    "no": []
+                },
+            },
+
+            "internal_persecutor_controlling": {
+                "model_prompt": lambda user_id, db_session, curr_session, app: self.get_model_prompt_controlling(user_id, app, db_session),
+
+                "choices": {
+                "yes": "project_emotion",
+                "no": "internal_persecutor_accusing"
+                },
+                "protocols": {
+                "yes": self.INTERNAL_PERSECUTOR_PROTOCOLS,
+                "no": []
+                },
+            },
+
+            "internal_persecutor_accusing": {
+                "model_prompt": lambda user_id, db_session, curr_session, app: self.get_model_prompt_accusing(user_id, app, db_session),
+
+                "choices": {
+                "yes": "project_emotion",
+                "no": lambda user_id, db_session, curr_session, app: self.get_next_question(user_id),
+                },
+                "protocols": {
+                "yes": self.INTERNAL_PERSECUTOR_PROTOCOLS,
+                "no": [self.PROTOCOL_TITLES[13]],
+                },
+            },
+
+            "rigid_thought": {
+                "model_prompt": lambda user_id, db_session, curr_session, app: self.get_model_prompt_rigid_thought(user_id, app, db_session),
+
+                "choices": {
+                    "yes": lambda user_id, db_session, curr_session, app: self.get_next_question(user_id),
+                    "no": "project_emotion",
+                },
+                "protocols": {
+                    "yes": [self.PROTOCOL_TITLES[13]],
+                    "no": [self.PROTOCOL_TITLES[13], self.PROTOCOL_TITLES[19]],
+                },
+            },
+
+
+            "personal_crisis": {
+                "model_prompt": lambda user_id, db_session, curr_session, app: self.get_model_prompt_personal_crisis(user_id, app, db_session),
+
+                "choices": {
+                    "yes": "project_emotion",
+                    "no": lambda user_id, db_session, curr_session, app: self.get_next_question(user_id),
+                },
+                "protocols": {
+                    "yes": [self.PROTOCOL_TITLES[13], self.PROTOCOL_TITLES[17]],
+                    "no": [self.PROTOCOL_TITLES[13]],
                 },
             },
 
@@ -543,7 +682,6 @@ class ModelDecisionMaker:
                    "Continue": [],
                },
             },
-
 
             "suggestions": {
                 "model_prompt": lambda user_id, db_session, curr_session, app: self.get_model_prompt_suggestions(user_id, app, db_session),
@@ -731,23 +869,23 @@ class ModelDecisionMaker:
     # if all have been checked
 
     def get_kai(self, user_id):
-       self.chosen_personas[user_id] = "Kai"
+       self.chosen_personas[user_id] = "棋"
        self.datasets[user_id] = self.kai
        return "opening_prompt"
     def get_robert(self, user_id):
-       self.chosen_personas[user_id] = "Robert"
+       self.chosen_personas[user_id] = "羅拔"
        self.datasets[user_id] = self.robert
        return "opening_prompt"
     def get_gabrielle(self, user_id):
-       self.chosen_personas[user_id] = "Gabrielle"
+       self.chosen_personas[user_id] = "夾比牙喇"
        self.datasets[user_id] = self.gabrielle
        return "opening_prompt"
     def get_arman(self, user_id):
-       self.chosen_personas[user_id] = "Arman"
+       self.chosen_personas[user_id] = "阿曼"
        self.datasets[user_id] = self.arman
        return "opening_prompt"
     def get_olivia(self, user_id):
-       self.chosen_personas[user_id] = "Olivia"
+       self.chosen_personas[user_id] = "奧利菲亞"
        self.datasets[user_id] = self.olivia
        return "opening_prompt"
 
@@ -812,8 +950,8 @@ class ModelDecisionMaker:
             self.guess_emotion_predictions[user_id] = 'Angry'
             self.user_emotions[user_id] = 'Angry'
         else:
-            self.guess_emotion_predictions[user_id] = 'Happy/Content'
-            self.user_emotions[user_id] = 'Happy'
+            self.guess_emotion_predictions[user_id] = "開心"
+            self.user_emotions[user_id] ="開心"
         #self.guess_emotion_predictions[user_id] = emotion
         #self.user_emotions[user_id] = emotion
         return "guess_emotion"
@@ -875,29 +1013,29 @@ class ModelDecisionMaker:
     def get_sad_emotion(self, user_id):
         self.guess_emotion_predictions[user_id] = "Sad"
         self.user_emotions[user_id] = "Sad"
-        return "after_classification_negative"
+        return "after_classification_sad"
     def get_angry_emotion(self, user_id):
         self.guess_emotion_predictions[user_id] = "Angry"
         self.user_emotions[user_id] = "Angry"
-        return "after_classification_negative"
+        return "after_classification_angry"
     def get_anxious_emotion(self, user_id):
         self.guess_emotion_predictions[user_id] = "Anxious/Scared"
         self.user_emotions[user_id] = "Anxious"
-        return "after_classification_negative"
+        return "after_classification_fear"
     def get_happy_emotion(self, user_id):
-        self.guess_emotion_predictions[user_id] = "Happy/Content"
-        self.user_emotions[user_id] = "Happy"
+        self.guess_emotion_predictions[user_id] = "開心"
+        self.user_emotions[user_id] = "開心"
         return "after_classification_happy"
 
     def get_model_prompt_project_emotion(self, user_id, app, db_session):
         time.sleep(7)
-        if self.chosen_personas[user_id] == "Robert":
+        if self.chosen_personas[user_id] == "羅拔":
             prompt = "Ok, thank you. Now, one last important thing: since you've told me you're feeling " + self.user_emotions[user_id].lower() + ", I would like you to try to project this emotion onto your childhood self. You can press 'continue' when you are ready and I'll suggest some protocols I think may be appropriate for you."
-        elif self.chosen_personas[user_id] == "Gabrielle":
+        elif self.chosen_personas[user_id] == "夾比牙喇":
             prompt = "Thank you, I will recommend some protocols for you in a moment. Before I do that, could you please try to project your " + self.user_emotions[user_id].lower() + " feeling onto your childhood self? Take your time to try this, and press 'continue' when you feel ready."
-        elif self.chosen_personas[user_id] == "Arman":
+        elif self.chosen_personas[user_id] == "阿曼":
             prompt = "Ok, thank you for letting me know that. Before I give you some protocol suggestions, please take some time to project your current " + self.user_emotions[user_id].lower() + " feeling onto your childhood self. Press 'continue' when you feel able to do it."
-        elif self.chosen_personas[user_id] == "Arman":
+        elif self.chosen_personas[user_id] == "阿曼":
             prompt = "Ok, thank you, I'm going to draw up a list of protocols which I think would be suitable for you today. In the meantime, going back to this " + self.user_emotions[user_id].lower() + " feeling of yours, would you like to try to project it onto your childhood self? You can try now and press 'continue' when you feel ready."
         else:
             prompt = "Thank you. While I have a think about which protocols would be best for you, please take your time now and try to project your current " + self.user_emotions[user_id].lower() + " emotion onto your childhood self. When you are able to do this, please press 'continue' to receive your suggestions."
@@ -1064,6 +1202,7 @@ class ModelDecisionMaker:
         prev_qs = pd.DataFrame(self.recent_questions[user_id],columns=['sentences'])
         data = self.datasets[user_id]
         column = data["Happy - That's Good! Let me recommend a protocol you can attempt."].dropna()
+        # column = data["開心"].dropna()
         question = self.get_best_sentence(column, prev_qs)
         if len(self.recent_questions[user_id]) < 50:
             self.recent_questions[user_id].append(question)
@@ -1142,7 +1281,7 @@ class ModelDecisionMaker:
         else:
             self.recent_questions[user_id] = []
             self.recent_questions[user_id].append(question)
-        return [self.split_sentence(question), "You have been disconnected. Refresh the page if you would like to start over."]
+        return [self.split_sentence(question), "你已斷線, 請更新頁面來重新連線。"]
 
 
     def determine_next_prompt_new_protocol(self, user_id, app):
@@ -1367,7 +1506,6 @@ class ModelDecisionMaker:
                 current_choice != "suggestions"
                 and current_choice != "event_is_recent"
                 and current_choice != "more_questions"
-                and current_choice != "after_classification_positive"
                 and current_choice != "user_found_useful"
                 and current_choice != "check_emotion"
                 and current_choice != "new_protocol_better"
@@ -1375,8 +1513,10 @@ class ModelDecisionMaker:
                 and current_choice != "new_protocol_same"
                 and current_choice != "choose_persona"
                 and current_choice != "project_emotion"
-                and current_choice != "after_classification_negative"
                 and current_choice != "after_classification_happy"
+                and current_choice != "after_classification_sad"
+                and current_choice != "after_classification_angry"
+                and current_choice != "after_classification_fear"
             ):
                 user_choice = user_choice.lower()
 
@@ -1402,8 +1542,8 @@ class ModelDecisionMaker:
                     next_choice = current_choice_for_question["Anxious/Scared"]
                     protocols_chosen = current_protocols["Anxious/Scared"]
                 else:
-                    next_choice = current_choice_for_question["Happy/Content"]
-                    protocols_chosen = current_protocols["Happy/Content"]
+                    next_choice = current_choice_for_question["開心"]
+                    protocols_chosen = current_protocols["開心"]
             else:
                 next_choice = current_choice_for_question[user_choice]
                 protocols_chosen = current_protocols[user_choice]
@@ -1423,7 +1563,7 @@ class ModelDecisionMaker:
             elif self.guess_emotion_predictions[user_id] == "Anxious/Scared":
                 next_choice = next_choice["Anxious/Scared"]
             else:
-                next_choice = next_choice["Happy/Content"]
+                next_choice = next_choice["開心"]
 
         if callable(protocols_chosen):
             protocols_chosen = protocols_chosen(user_id, db_session, user_session, app)
